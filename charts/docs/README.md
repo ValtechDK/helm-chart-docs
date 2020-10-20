@@ -28,48 +28,45 @@ variables:
     strategy:
         runOnce:
         deploy:
-            steps:
-            - task: HelmDeploy@0
+          steps:
+          - task: HelmDeploy@0
             inputs:
-                connectionType: Kubernetes Service Connection
-                kubernetesServiceEndpoint: ${{ parameters.k8s_admin_connection }}
-                namespace: ${{ parameters.namespace }}
-                command: repo
-                arguments: add $(docs_help_repo_name) $(docs_help_repo_url)
+              connectionType: Kubernetes Service Connection
+              kubernetesServiceEndpoint: ${{ parameters.k8s_admin_connection }}
+              namespace: ${{ parameters.namespace }}
+              command: repo
+              arguments: add $(docs_help_repo_name) $(docs_help_repo_url)
             displayName: Add docs Helm repository
 
-            - task: HelmDeploy@0
+          - task: HelmDeploy@0
             inputs:
-                connectionType: Kubernetes Service Connection
-                kubernetesServiceEndpoint: ${{ parameters.k8s_admin_connection }}
-                namespace: ${{ parameters.namespace }}
-                command: repo
-                arguments: >-
-                  update
+              connectionType: Kubernetes Service Connection
+              kubernetesServiceEndpoint: ${{ parameters.k8s_admin_connection }}
+              namespace: ${{ parameters.namespace }}
+              command: repo
+              arguments: >-
+                update
             displayName: Update Helm repository
 
-            - task: HelmDeploy@0
+          - task: HelmDeploy@0
             inputs:
-                connectionType: Kubernetes Service Connection
-                kubernetesServiceEndpoint: ${{ parameters.k8s_admin_connection }}
-                namespace: ${{ parameters.namespace }}
-                command: upgrade
-                chartType: Name
-                chartName: $(docs_chart_name)
-                releaseName: ${{ parameters.project_name }}-docs
-                install: true
-                waitForExecution: true
-                arguments: >-
+              connectionType: Kubernetes Service Connection
+              kubernetesServiceEndpoint: ${{ parameters.k8s_admin_connection }}
+              namespace: ${{ parameters.namespace }}
+              command: upgrade
+              chartType: Name
+              chartName: $(docs_chart_name)
+              releaseName: ${{ parameters.project_name }}-docs
+              install: true
+              waitForExecution: true
+              arguments: >-
                 --timeout 30m0s
                 --values $(Pipeline.Workspace)/Windows/docs-config.yaml
-                --set docs.ingress.enabled=true
-                --set docs.ingress.annotations."kubernetes\.io/ingress\.class"="nginx"
-                --set docs.ingress.annotations."nginx\.ingress\.kubernetes\.io/proxy-connect-timeout"="60s"
-                --set docs.ingress.annotations."nginx\.ingress\.kubernetes\.io/proxy-send-timeout"="60s"
-                --set docs.ingress.annotations."nginx\.ingress\.kubernetes\.io/proxy-read-timeout"="60s"
-                --set docs.ingress.annotations."cert-manager\.io/issuer"="letsencrypt-prod"
-                --set docs.ingress.tls[0].hosts[0]="docs-${{ parameters.namespace }}.${{ parameters.dns_tld }}"
-                --set docs.ingress.tls[0].secretName="letsencrypt-tls-docs"
-                --set docs.ingress.hosts[0].host="docs-${{ parameters.namespace }}.${{ parameters.dns_tld }}"
-                --set docs.ingress.hosts[0].paths[0]="/"
+                --set tolerations[0].key="os"
+                --set tolerations[0].operator="Equal"
+                --set tolerations[0].value="windows"
+                --set tolerations[0].effect="NoSchedule"
+                --set ingress.enabled=true
+                --set ingress.hosts[0].host="docs-${{ parameters.namespace }}.${{ parameters.dns_tld }}"
+                --set ingress.hosts[0].paths[0]="/"
             displayName: Deploy docs service
