@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  docs:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2020-10-20T11:38:22.607531719Z"
+    description: A Helm chart for deployment of documentation to Kubernetes
+    digest: 4c7ade5ff23f5c7b8a5c1915993b471b852e1e1d1102b8adc6b5c8a285baf7a7
+    name: docs
+    urls:
+    - https://github.com/ValtechDK/helm-chart-docs/releases/download/docs-1.0.0/docs-1.0.0.tgz
+    version: 1.0.0
+generated: "2020-10-20T11:38:22.427143663Z"
