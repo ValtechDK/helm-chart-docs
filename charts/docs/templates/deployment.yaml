@@ -27,7 +27,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: {{ required "Image required" .Values.image.tag | quote }}
+          image: {{- required "Image required" (include "docs.imagetag" .) | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: default
