@@ -4,12 +4,10 @@
 
 replicaCount: 1
 
-image:
-  tag:
-  pullPolicy: Always
 docs:
   image:
     tag:
+    pullPolicy: Always
 
 imagePullSecrets: []
 nameOverride: ""
